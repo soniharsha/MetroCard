@@ -1,4 +1,5 @@
 MetroCardCommandExecutionServiceTest.class
 commands/BalanceCommandTest.class
+FileInterfaceTest.class
 MetroCardManagerTest.class
 commands/CheckInCommandTest.class

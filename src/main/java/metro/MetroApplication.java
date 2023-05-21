@@ -1,10 +1,16 @@
 package metro;
 
 
+import java.io.IOException;
+
 public class MetroApplication {
 
     public static void main(String[] args) {
         UserInterface userInterface = new FileInterface();
-        userInterface.interact(args);
+        try {
+            userInterface.interact(args);
+        } catch (IOException ex) {
+            System.out.println("Exception occurred"+ex);
+        }
     }
 }

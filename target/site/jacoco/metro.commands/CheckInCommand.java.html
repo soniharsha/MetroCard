@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CheckInCommand.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MetroCard</a> &gt; <a href="index.source.html" class="el_package">metro.commands</a> &gt; <span class="el_source">CheckInCommand.java</span></div><h1>CheckInCommand.java</h1><pre class="source lang-java linenums">package metro.commands;
+
+import metro.MetroCardManager;
+import metro.StationFactory;
+import metro.entity.Station;
+import metro.enums.PassengerType;
+import metro.enums.StationEnum;
+
+public class CheckInCommand implements ICommand {
+<span class="fc" id="L10">    private final Double rechargeTax = 0.02;</span>
+    private MetroCardManager metroCardManager;
+    private StationFactory stationFactory;
+
+<span class="fc" id="L14">    public CheckInCommand(MetroCardManager metroCardManager, StationFactory stationFactory) {</span>
+<span class="fc" id="L15">        this.metroCardManager = metroCardManager;</span>
+<span class="fc" id="L16">        this.stationFactory = stationFactory;</span>
+<span class="fc" id="L17">    }</span>
+
+    @Override
+    public void executeCommand(String[] commandArgument) {
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        if(commandArgument.length&lt;3) throw new IllegalArgumentException(&quot;CheckIn command needs three argument&quot;);</span>
+        try {
+<span class="fc" id="L23">            String cardName = commandArgument[1];</span>
+<span class="fc" id="L24">            PassengerType passengerType = PassengerType.valueOf(commandArgument[2]);</span>
+<span class="fc" id="L25">            StationEnum stationEnum = StationEnum.getInstance(commandArgument[3]);</span>
+
+<span class="fc" id="L27">            Station station = stationFactory.getStation(stationEnum);</span>
+<span class="fc" id="L28">            checkInPassenger(cardName, passengerType, station);</span>
+<span class="fc" id="L29">        } catch (IllegalArgumentException iae) {</span>
+<span class="fc" id="L30">            throw new IllegalArgumentException(&quot;PassengerType or station name is not valid&quot;);</span>
+<span class="fc" id="L31">        }</span>
+<span class="fc" id="L32">    }</span>
+
+    public void checkInPassenger(String cardName, PassengerType passengerType, Station station) {
+<span class="fc" id="L35">        Integer curPassengerTravelCharge = passengerType.getTravelCharge();</span>
+<span class="fc" id="L36">        Integer metroCardBalance = metroCardManager.getBalance(cardName);</span>
+<span class="fc" id="L37">        Integer totalStationCollection = curPassengerTravelCharge;</span>
+<span class="fc" id="L38">        Integer stationDiscount = 0;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if(metroCardManager.isPassengerEligibleForDiscount(cardName, passengerType)) {</span>
+<span class="fc" id="L40">            curPassengerTravelCharge = (int) (curPassengerTravelCharge * 0.5);</span>
+<span class="fc" id="L41">            stationDiscount = curPassengerTravelCharge;</span>
+<span class="fc" id="L42">            totalStationCollection = curPassengerTravelCharge;</span>
+        }
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if(metroCardBalance&lt;curPassengerTravelCharge) {</span>
+<span class="fc" id="L45">            Integer addedTaxForRecharge = (int) ((curPassengerTravelCharge-metroCardBalance) * rechargeTax);</span>
+<span class="fc" id="L46">            totalStationCollection += addedTaxForRecharge;</span>
+        }
+<span class="fc" id="L48">        station.addCollection(totalStationCollection);</span>
+<span class="fc" id="L49">        station.updatePassengerCount(passengerType);</span>
+<span class="fc" id="L50">        station.addDiscount(stationDiscount);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        metroCardManager.updateTravelInfoOnCard(cardName,passengerType, curPassengerTravelCharge&lt;=metroCardBalance?curPassengerTravelCharge:metroCardBalance);</span>
+<span class="fc" id="L52">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

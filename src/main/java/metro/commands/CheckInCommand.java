@@ -27,7 +27,7 @@ public class CheckInCommand implements ICommand {
             Station station = stationFactory.getStation(stationEnum);
             checkInPassenger(cardName, passengerType, station);
         } catch (IllegalArgumentException iae) {
-            throw new RuntimeException("PassengerType or station name is not valid");
+            throw new IllegalArgumentException("PassengerType or station name is not valid");
         }
     }
 

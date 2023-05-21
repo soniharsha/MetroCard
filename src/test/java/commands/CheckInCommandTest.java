@@ -46,6 +46,16 @@ public class CheckInCommandTest {
         Assert.assertEquals(airport.getDiscountOffered(),100);
     }
 
+    @Test
+    public void testIllegalArgumentException() {
+        MetroCardManager metroCardManager = new MetroCardManager();
+        StationFactory stationFactory = new StationFactory();
+
+        CheckInCommand checkInCommand = new CheckInCommand(metroCardManager, stationFactory);
+        String[] command = {"CHECK_IN" ,"MC1", "MEN", "CENTRAL"};
+        Assert.assertThrows(IllegalArgumentException.class, ()-> checkInCommand.executeCommand(command));
+    }
+
     private void executeBalanceCommand(BalanceCommand balanceCommand) {
         String[] command = {"BALANCE","MC1","600"};
         balanceCommand.executeCommand(command);
