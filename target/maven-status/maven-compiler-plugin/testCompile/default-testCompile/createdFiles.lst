@@ -1,0 +1,4 @@
+MetroCardCommandExecutionServiceTest.class
+commands/BalanceCommandTest.class
+MetroCardManagerTest.class
+commands/CheckInCommandTest.class
